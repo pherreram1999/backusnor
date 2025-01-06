@@ -58,4 +58,5 @@ func main() {
 
 	fmt.Println(stack)
 
+	SaveCode(stack.String())
 }

@@ -20,7 +20,9 @@ type (
 )
 
 func NewSymboStack() *SymbolStack {
-	return &SymbolStack{}
+	return &SymbolStack{
+		State: "q0",
+	}
 }
 
 func (s *SymbolStack) Add(symbol rune) {
@@ -78,6 +80,9 @@ func (node *SymbolNode) JoinWith(toJoin *SymbolStack) {
 	toJoin.Head.Left = node
 	tail := toJoin.Last()
 	tail.Right = originalRight
+	if originalRight != nil {
+		originalRight.Left = tail
+	}
 }
 
 func (s *SymbolStack) insertString(str string) {
@@ -96,6 +101,7 @@ func (s *SymbolStack) insertString(str string) {
 	} else {
 		s.Head = toInsertList.Head
 	}
+
 }
 
 func (s *SymbolStack) AddFromString(str string) {
@@ -105,13 +111,23 @@ func (s *SymbolStack) AddFromString(str string) {
 }
 
 func (s *SymbolStack) MoveRigth() {
+	if s.Head == nil {
+		return
+	}
 	s.Head = s.Head.Right
+}
+
+func (s *SymbolStack) MoveLeft() {
+	if s.Head == nil {
+		return
+	}
+	s.Head = s.Head.Left
 }
 
 func (s *SymbolStack) Debug() {
 	nav := s.List
 	for nav != nil {
-		fmt.Printf("%c -> %p\n", nav.Symbol, nav.Left)
+		fmt.Printf("%c -> Node: %p (L: %p R: %p)\n", nav.Symbol, nav, nav.Left, nav.Right)
 		nav = nav.Right
 	}
 }

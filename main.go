@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -19,12 +20,22 @@ func main() {
 	move := "R"
 	ifCounter := 0
 
+	_ = os.Remove("derivaciones.txt")
+
+	derivicacionesFile, err := os.Create("derivaciones.txt")
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer derivicacionesFile.Close()
+
 	for stack.Head != nil && ifCounter < MaxSteps {
 
 		//fmt.Println("Movement:", move, "- Stack:", stack, "Symbol Input", stack.Head)
 
 		if stack.State == "q0" && stack.Head.Symbol == 'A' {
-			if r.Float64() > .50 || stack.Head.Right == nil {
+			if r.Float64() > .60 || stack.Head.Right == nil {
 				stack.insertString(";eS")
 			} else {
 				stack.Remove(stack.Head)
@@ -54,9 +65,9 @@ func main() {
 			stack.MoveLeft()
 		}
 
-	}
+		_, _ = fmt.Fprintln(derivicacionesFile, stack)
 
-	fmt.Println(stack)
+	}
 
 	SaveCode(stack.String())
 }

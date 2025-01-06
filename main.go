@@ -7,9 +7,7 @@ import (
 	"time"
 )
 
-const (
-	MaxSteps = 10
-)
+var MaxSteps = 10
 
 func main() {
 	stack := NewSymboStack()
@@ -24,6 +22,8 @@ func main() {
 
 	derivicacionesFile, err := os.Create("derivaciones.txt")
 
+	AskNumSteps(r)
+
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func main() {
 		//fmt.Println("Movement:", move, "- Stack:", stack, "Symbol Input", stack.Head)
 
 		if stack.State == "q0" && stack.Head.Symbol == 'A' {
-			if r.Float64() > .60 || stack.Head.Right == nil {
+			if r.Float64() > .50 || stack.Head.Right == nil {
 				stack.insertString(";eS")
 			} else {
 				stack.Remove(stack.Head)

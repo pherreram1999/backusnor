@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	IfsNum   = 10
 	MaxSteps = 10
 )
 

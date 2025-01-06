@@ -60,17 +60,24 @@ func (s *SymbolStack) Remove(node *SymbolNode) {
 		return
 	}
 
+	if node == s.List { // Si es el primer nodo
+		s.List = node.Right
+		if s.List != nil {
+			s.List.Left = nil
+		}
+	} else if node.Right != nil { // Nodo intermedio
+		node.Right.Left = node.Left
+	}
 	if node.Left != nil {
-		// se desplaza uno a la izuierda
 		node.Left.Right = node.Right
 	}
 
-	if node.Right != nil {
-		node.Right.Left = node.Left
+	if node == s.Head { // Si es el nodo actual
+		s.Head = node.Right
 	}
+
 	node.Left = nil
 	node.Right = nil
-	node = nil
 	s.noElements--
 }
 
@@ -89,19 +96,30 @@ func (s *SymbolStack) insertString(str string) {
 	if s.Head == nil {
 		return
 	}
-	// el nodo actual se desecha
 	leftNode := s.Head.Left
+	rightNode := s.Head.Right
+
+	// Remueve el nodo actual
 	s.Remove(s.Head)
+
+	// Inserta la nueva sublista
 	toInsertList := NewSymboStack()
 	toInsertList.AddFromString(str)
-	// si tenemos nodo izquierda
+
+	// Conecta la sublista con los nodos izquierdo y derecho
 	if leftNode != nil {
-		leftNode.JoinWith(toInsertList)
-		s.Head = leftNode
+		leftNode.Right = toInsertList.List
+		toInsertList.List.Left = leftNode
 	} else {
-		s.Head = toInsertList.Head
+		s.List = toInsertList.List
 	}
 
+	tail := toInsertList.Last()
+	if rightNode != nil {
+		tail.Right = rightNode
+		rightNode.Left = tail
+	}
+	s.Head = toInsertList.Head
 }
 
 func (s *SymbolStack) AddFromString(str string) {
@@ -111,19 +129,16 @@ func (s *SymbolStack) AddFromString(str string) {
 }
 
 func (s *SymbolStack) MoveRigth() {
-	if s.Head == nil {
-		return
+	if s.Head != nil && s.Head.Right != nil {
+		s.Head = s.Head.Right
 	}
-	s.Head = s.Head.Right
 }
 
 func (s *SymbolStack) MoveLeft() {
-	if s.Head == nil {
-		return
+	if s.Head != nil && s.Head.Left != nil {
+		s.Head = s.Head.Left
 	}
-	s.Head = s.Head.Left
 }
-
 func (s *SymbolStack) Debug() {
 	nav := s.List
 	for nav != nil {

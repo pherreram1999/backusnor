@@ -13,7 +13,8 @@ func main() {
 
 	for stack.Head != nil {
 		if stack.Head.Symbol == 'S' {
-			stack.insertString("iCtSA")
+			// se pasa por referencia para no mover el cabezal
+			stack.insertString(&stack.Head, "iCtSA")
 			break
 		}
 		stack.MoveRigth()

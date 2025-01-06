@@ -80,20 +80,20 @@ func (node *SymbolNode) JoinWith(toJoin *SymbolStack) {
 	tail.Right = originalRight
 }
 
-func (s *SymbolStack) insertString(str string) {
-	if s.Head == nil {
+func (s *SymbolStack) insertString(node **SymbolNode, str string) {
+	if *node == nil {
 		return
 	}
 	// el nodo actual se desecha
-	leftNode := s.Head.Left
-	s.Remove(s.Head)
+	leftNode := (*node).Left
+	s.Remove(*node)
 	toInsertList := NewSymboStack()
 	toInsertList.AddFromString(str)
 	// si tenemos nodo izquierda
 	if leftNode != nil {
 		leftNode.JoinWith(toInsertList)
 	} else {
-		s.Head = toInsertList.Head
+		*node = toInsertList.Head
 	}
 }
 
@@ -101,6 +101,10 @@ func (s *SymbolStack) AddFromString(str string) {
 	for _, char := range str {
 		s.Add(char)
 	}
+}
+
+func (s *SymbolStack) MoveRigth() {
+	s.Head = s.Head.Right
 }
 
 func (s *SymbolStack) Debug() {
@@ -119,10 +123,6 @@ func (s *SymbolStack) String() string {
 		nav = nav.Right
 	}
 	return str
-}
-
-func (s *SymbolStack) MoveRigth() {
-	s.Head = s.Head.Right
 }
 
 func (s *SymbolNode) String() string {
